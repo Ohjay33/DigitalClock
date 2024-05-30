@@ -1,54 +1,54 @@
+
+
 $(document).ready(function () {
-	
-	function time() {
+	function updateClock() {
 		var now = new Date();
-		var hour =  now.getHours();
-		var min =  now.getMinutes();
-		var sec =  now.getSeconds();
-		var color = timeColor(hour, min, sec);
-		
-		if (hour > 12) {
-			hour = hour - 12;
-		};
+		var hours = now.getHours();
+		var minutes = now.getMinutes();
+		var seconds = now.getSeconds();
+		var ampm = hours >= 12 ? 'PM' : 'AM';
 
-		hour = formatTime(hour);
-		min = formatTime(min);
-		sec = formatTime(sec);
+		// Convert hours to 12-hour format
+		hours = hours % 12;
+		hours = hours ? hours : 12; // 0 should be displayed as 12
 
-		$('#cur_hour').text(hour);
-		$('#cur_min').text(min);
-		$('#cur_sec').text(sec);
-		$('body').css('background-color', '#' + color);
-		$('#cur_color').text(color);
+		// Add leading zeros if necessary
+		hours = hours < 10 ? '0' + hours : hours;
+		minutes = minutes < 10 ? '0' + minutes : minutes;
+		seconds = seconds < 10 ? '0' + seconds : seconds;
 
-		t=setTimeout(function(){time()}, 500);
+		var timeString = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
+		document.getElementById('clock').innerText = timeString;
+
+
+            // Display the date
+            var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            var dateString = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+            document.getElementById('date').innerText = dateString;
 	}
 
-	function formatTime(i) {
-		if (i < 10) {
-			i = '0' + i;
+	function randomColor() {
+		var letters = '0123456789ABCDEF';
+		var color = '#';
+		for (var i = 0; i < 6; i++) {
+			color += letters[Math.floor(Math.random() * 16)];
 		}
-		return i;
-	}
-	function formatColor(i) {
-		if (i.length < 2) {
-			i = '0' + i;
-		}
-		return i;
+		return color;
 	}
 
-	function timeColor(hour, min, sec) {
-
-		red = Math.round(255 * (hour / 23)).toString(16);
-		green = Math.round(255 * (min / 59)).toString(16);
-		blue = Math.round(255 * (sec / 59)).toString(16);
-
-		red = formatColor(red);
-		green = formatColor(green);
-		blue = formatColor(blue);
-
-		return (red + green + blue).toUpperCase();
+	function switchColor() {
+		document.body.style.backgroundColor = randomColor();
 	}
 
-	time();	
+	// Update the clock every second
+	setInterval(updateClock, 1000);
+
+	// Switch colors every 3 seconds
+	setInterval(switchColor, 3000);
+
+	// Initial call to display the clock immediately
+	updateClock();
+
+
 });
